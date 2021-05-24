@@ -13,18 +13,19 @@ last_ret_code=None
 region_set=None
 
 class Region:
-    def __init__(self,horiz_binning,vert_binning,col_start,col_end,row_start,row_end):
-        self.new(horiz_binning,vert_binning,col_start,col_end,row_start,row_end)
-    def new(self,horiz_binning,vert_binning,col_start,col_end,row_start,row_end):
+    def __init__(self,horiz_binning,vert_binning,col_start,col_end,row_start,row_end,nosdk=False):
+        self.new(horiz_binning,vert_binning,col_start,col_end,row_start,row_end,nosdk)
+    def new(self,horiz_binning,vert_binning,col_start,col_end,row_start,row_end,nosdk):
         self.binning=[horiz_binning,vert_binning]
         self.columns=[col_start,col_end]
         self.rows=[row_start,row_end]
         self.shape=(self.rows[1]-self.rows[0]+1,self.columns[1]-self.columns[0]+1)
-        self._checkregion()
+        self._checkregion(nosdk)
         self.datasize=self._datasize()
     def _datasize(self):
         return(self.shape[0]*self.shape[1]/(self.binning[0]*self.binning[1]))
-    def _checkregion(self):
+    def _checkregion(self,nosdk=False):
+        if nosdk: return
         self.ccdhw=detector_size()
         assert self.rows[0]>=1 and self.rows[1]<=self.ccdhw[0]
         assert self.columns[0]>=1 and self.columns[1]<=self.ccdhw[1]
